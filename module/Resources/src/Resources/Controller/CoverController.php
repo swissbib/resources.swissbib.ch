@@ -27,8 +27,6 @@
  */
 namespace Resources\Controller;
 use Resources\Cover\Loader;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Http\Client;
 
 /**
  * Generates covers for book entries
@@ -39,8 +37,13 @@ use Zend\Http\Client;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://www.vufind.org  Main Page
  */
-class CoverController extends AbstractActionController
+class CoverController extends AbstractBase
 {
+    /**
+     * Cover loader
+     *
+     * @var Loader
+     */
     protected $loader = false;
 
     /**
@@ -52,17 +55,18 @@ class CoverController extends AbstractActionController
     {
         // Construct object for loading cover images if it does not already exist:
         if (!$this->loader) {
-
-            $httpClient = new Client();
-
+            $cacheDir = $this->getServiceLocator()->get('VuFind\CacheManager')
+                ->getCache('cover')->getOptions()->getCacheDir();
             $this->loader = new Loader(
-                $this->getServiceLocator()->get('resourcesConfig'),
-                $httpClient,
-                'data'
+                $this->getConfig(),
+                $this->getServiceLocator()->get('VuFind\ContentCoversPluginManager'),
+                $this->getServiceLocator()->get('VuFindTheme\ThemeInfo'),
+                $this->getServiceLocator()->get('VuFind\Http')->createClient(),
+                $cacheDir
             );
-            //\VuFind\ServiceManager\Initializer::initInstance(
-            //    $this->loader, $this->getServiceLocator()
-            //);
+            \VuFind\ServiceManager\Initializer::initInstance(
+                $this->loader, $this->getServiceLocator()
+            );
         }
         return $this->loader;
     }
@@ -75,10 +79,25 @@ class CoverController extends AbstractActionController
     public function showAction()
     {
         $this->writeSession();  // avoid session write timing bug
+
+        // Special case: proxy a full URL:
+        $proxy = $this->params()->fromQuery('proxy');
+        if (!empty($proxy)) {
+            return $this->proxyUrl($proxy);
+        }
+
+        // Default case -- use image loader:
         $this->getLoader()->loadImage(
-            $this->params()->fromQuery('isn'),
+        // Legacy support for "isn" param which has been superseded by isbn:
+            $this->params()->fromQuery('isbn', $this->params()->fromQuery('isn')),
             $this->params()->fromQuery('size'),
-            $this->params()->fromQuery('contenttype')
+            $this->params()->fromQuery('contenttype'),
+            $this->params()->fromQuery('title'),
+            $this->params()->fromQuery('author'),
+            $this->params()->fromQuery('callnumber'),
+            $this->params()->fromQuery('issn'),
+            $this->params()->fromQuery('oclc'),
+            $this->params()->fromQuery('upc')
         );
         return $this->displayImage();
     }
@@ -108,14 +127,37 @@ class CoverController extends AbstractActionController
         $headers->addHeaderLine(
             'Content-type', $this->getLoader()->getContentType()
         );
+
+        // Send proper caching headers so that the user's browser
+        // is able to cache the cover images and not have to re-request
+        // then on each page load. Default TTL set at 14 days
+
+        $coverImageTtl = (60 * 60 * 24 * 14); // 14 days
+        $headers->addHeaderLine(
+            'Cache-Control', "maxage=" . $coverImageTtl
+        );
+        $headers->addHeaderLine(
+            'Pragma', 'public'
+        );
+        $headers->addHeaderLine(
+            'Expires', gmdate('D, d M Y H:i:s', time() + $coverImageTtl) . ' GMT'
+        );
+
         $response->setContent($this->getLoader()->getImage());
         return $response;
     }
 
-    protected function writeSession()
+    /**
+     * Proxy a URL.
+     *
+     * @param string $url URL to proxy
+     *
+     * @return \Zend\Http\Response
+     */
+    protected function proxyUrl($url)
     {
-        //$this->getServiceLocator()->get('VuFind\SessionManager')->writeClose();
+        $client = $this->getServiceLocator()->get('VuFind\Http')->createClient();
+        return $client->setUri($url)->send();
     }
-
 }
 
