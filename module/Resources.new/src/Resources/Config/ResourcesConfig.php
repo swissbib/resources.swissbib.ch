@@ -59,9 +59,9 @@ class ResourcesConfig implements  FactoryInterface {
 
 
 
-        $config = Factory::fromFile( '/usr/local/vufind/resources/local/config/resources/config.ini');
+        //$config = Factory::fromFile( '/usr/local/vufind/resources.swissbib.ch/local/config/resources/config.ini');
         $config1 = new Ini();
-        $test =  $config1->fromFile('/usr/local/vufind/resources/local/config/resources/config.ini');
+        $test =  $config1->fromFile('/usr/local/vufind/resources.swissbib.ch/local/config/resources/config.ini');
         $t = new ZendConfig($test);
 
         return $t;
