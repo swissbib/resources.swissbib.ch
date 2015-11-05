@@ -27,6 +27,7 @@
  */
 namespace Resources\Controller;
 use Resources\Cover\Loader;
+use Zend\Mvc\Controller\AbstractActionController;
 
 /**
  * Generates covers for book entries
@@ -34,10 +35,12 @@ use Resources\Cover\Loader;
  * @category VuFind2
  * @package  Controller
  * @author   Demian Katz <demian.katz@villanova.edu>
+ * @author  Guenter Hipler <guenter.hipler@unibas.ch>
+ * @author Matthias Edel    <matthias.edel@unibas.ch>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://www.vufind.org  Main Page
  */
-class CoverController extends AbstractBase
+class CoverController extends AbstractActionController
 {
     /**
      * Cover loader
@@ -55,18 +58,22 @@ class CoverController extends AbstractBase
     {
         // Construct object for loading cover images if it does not already exist:
         if (!$this->loader) {
+            //wie gehen wir mit dem cache Manager um??
             $cacheDir = $this->getServiceLocator()->get('VuFind\CacheManager')
                 ->getCache('cover')->getOptions()->getCacheDir();
+
+            //I think we don't need the ThemeInfo Type for our purposes
             $this->loader = new Loader(
                 $this->getConfig(),
-                $this->getServiceLocator()->get('VuFind\ContentCoversPluginManager'),
-                $this->getServiceLocator()->get('VuFindTheme\ThemeInfo'),
+                $this->getServiceLocator()->get('Resources\ContentCoversPluginManager'),
+                //$this->getServiceLocator()->get('VuFindTheme\ThemeInfo'),
                 $this->getServiceLocator()->get('VuFind\Http')->createClient(),
                 $cacheDir
             );
-            \VuFind\ServiceManager\Initializer::initInstance(
-                $this->loader, $this->getServiceLocator()
-            );
+            //Initializers are not necessary - an assumption
+            //\VuFind\ServiceManager\Initializer::initInstance(
+            //    $this->loader, $this->getServiceLocator()
+            //);
         }
         return $this->loader;
     }
@@ -88,7 +95,7 @@ class CoverController extends AbstractBase
 
         // Default case -- use image loader:
         $this->getLoader()->loadImage(
-        // Legacy support for "isn" param which has been superseded by isbn:
+            // Legacy support for "isn" param which has been superseded by isbn:
             $this->params()->fromQuery('isbn', $this->params()->fromQuery('isn')),
             $this->params()->fromQuery('size'),
             $this->params()->fromQuery('contenttype'),
@@ -159,5 +166,18 @@ class CoverController extends AbstractBase
         $client = $this->getServiceLocator()->get('VuFind\Http')->createClient();
         return $client->setUri($url)->send();
     }
+
+    /**
+     * Get a VuFind configuration.
+     * Copied from AbstractBase part of VuFind Controller namespace
+     * @param string $id Configuration identifier (default = main VuFind config)
+     *
+     * @return \Zend\Config\Config
+     */
+    public function getConfig($id = 'config')
+    {
+        return $this->getServiceLocator()->get('Resources\Config')->get($id);
+    }
+
 }
 
