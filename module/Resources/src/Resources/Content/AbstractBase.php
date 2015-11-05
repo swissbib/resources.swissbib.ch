@@ -40,7 +40,7 @@ use VuFindCode\ISBN;
 abstract class AbstractBase implements \VuFindHttp\HttpServiceAwareInterface,
     \Zend\Log\LoggerAwareInterface
 {
-    use \VuFind\Log\LoggerAwareTrait;
+    use \Resources\Log\LoggerAwareTrait;
     use \VuFindHttp\HttpServiceAwareTrait;
 
     /**

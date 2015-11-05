@@ -13,6 +13,17 @@ if (php_sapi_name() === 'cli-server' && is_file(__DIR__ . parse_url($_SERVER['RE
 // Setup autoloading
 require 'init_autoloader.php';
 
+defined('LOCAL_OVERRIDE_DIR')
+|| define('LOCAL_OVERRIDE_DIR', (getenv('RESOURCES_LOCAL_DIR') ? getenv('RESOURCES_LOCAL_DIR') : ''));
+
+
+defined('RESOURCES_LOCAL_DIR')
+|| define('RESOURCES_LOCAL_DIR', (getenv('RESOURCES_LOCAL_DIR') ? getenv('RESOURCES_LOCAL_DIR') : ''));
+
+
+
+defined('APPLICATION_PATH')
+|| define('APPLICATION_PATH', dirname(__DIR__));
 
 
 defined('APPLICATION_ENV')

@@ -25,7 +25,7 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/use_of_external_content Wiki
  */
-namespace VuFind\Cover;
+namespace Resources\Cover;
 use VuFindCode\ISBN, Zend\Log\LoggerInterface, ZendService\Amazon\Amazon;
 
 /**

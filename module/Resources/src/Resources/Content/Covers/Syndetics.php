@@ -25,7 +25,7 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
  */
-namespace VuFind\Content\Covers;
+namespace Resources\Content\Covers;
 
 /**
  * Syndetics cover content loader.
@@ -36,7 +36,7 @@ namespace VuFind\Content\Covers;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
  */
-class Syndetics extends \VuFind\Content\AbstractCover
+class Syndetics extends \Resources\Content\AbstractCover
 {
     /**
      * Use SSL URLs?

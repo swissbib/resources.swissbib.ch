@@ -39,7 +39,7 @@ use VuFindCode\ISBN, Resources\Content\Covers\PluginManager as ApiManager;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/use_of_external_content Wiki
  */
-class Loader extends \VuFind\ImageLoader
+class Loader extends \Resources\ImageLoader
 {
     /**
      * Filename constructed from ISBN
@@ -151,11 +151,11 @@ class Loader extends \VuFind\ImageLoader
     /**
      * Get Cover Generator Object
      *
-     * @return VuFind\Cover\Generator
+     * @return Resources\Cover\Generator
      */
     public function getCoverGenerator()
     {
-        return new \VuFind\Cover\Generator(
+        return new \Resources\Cover\Generator(
             $this->themeTools,
             ['mode' => $this->config->Content->makeDynamicCovers]
         );

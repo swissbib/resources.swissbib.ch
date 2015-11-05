@@ -36,7 +36,7 @@ namespace Resources\Content;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:hierarchy_components Wiki
  */
-class PluginManager extends \VuFind\ServiceManager\AbstractPluginManager
+class PluginManager extends \Resources\ServiceManager\AbstractPluginManager
 {
     /**
      * Return the name of the base class or interface that plug-ins must conform
@@ -46,6 +46,6 @@ class PluginManager extends \VuFind\ServiceManager\AbstractPluginManager
      */
     protected function getExpectedInterface()
     {
-        return 'VuFind\Content\Loader';
+        return 'Resources\Content\Loader';
     }
 }

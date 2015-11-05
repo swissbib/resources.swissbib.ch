@@ -59,7 +59,7 @@ class CoverController extends AbstractActionController
         // Construct object for loading cover images if it does not already exist:
         if (!$this->loader) {
             //wie gehen wir mit dem cache Manager um??
-            $cacheDir = $this->getServiceLocator()->get('VuFind\CacheManager')
+            $cacheDir = $this->getServiceLocator()->get('Resources\CacheManager')
                 ->getCache('cover')->getOptions()->getCacheDir();
 
             //I think we don't need the ThemeInfo Type for our purposes
@@ -178,6 +178,21 @@ class CoverController extends AbstractActionController
     {
         return $this->getServiceLocator()->get('Resources\Config')->get($id);
     }
+
+
+    /**
+     * Write the session -- this is designed to be called prior to time-consuming
+     * AJAX operations.  This should help reduce the odds of a timing-related bug
+     * that causes the wrong version of session data to be written to disk (see
+     * VUFIND-716 for more details).
+     *
+     * @return void
+     */
+    protected function writeSession()
+    {
+        $this->getServiceLocator()->get('Resources\SessionManager')->writeClose();
+    }
+
 
 }
 

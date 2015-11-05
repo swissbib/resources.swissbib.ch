@@ -26,7 +26,7 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/use_of_external_content Wiki
  */
-namespace VuFind;
+namespace Resources;
 
 /**
  * Base class for loading images (shared by Cover\Loader and QRCode\Loader)
@@ -173,7 +173,9 @@ class ImageLoader implements \Zend\Log\LoggerAwareInterface
         }
 
         // Setting found -- get "no cover" image from config.ini:
-        $noCoverImage = $this->searchTheme($this->configuredFailImage);
+        //todo: we need a better way to determine the imageNoTAvailable
+        $noCoverImage = APPLICATION_PATH . "/public/img/noCover2.gif";
+        //$noCoverImage = $this->searchTheme($this->configuredFailImage);
 
         // If file is blank/inaccessible, log error and display default:
         if (empty($noCoverImage) || !file_exists($noCoverImage)
@@ -203,7 +205,9 @@ class ImageLoader implements \Zend\Log\LoggerAwareInterface
      */
     protected function loadDefaultFailImage()
     {
-        $file = $this->searchTheme($this->defaultFailImage);
+        //todo: do we need this?
+        //$file = $this->searchTheme($this->defaultFailImage);
+        $file = APPLICATION_PATH . "/public/img/noCover2.gif";
         if (!file_exists($file)) {
             throw new \Exception('Could not load default fail image.');
         }

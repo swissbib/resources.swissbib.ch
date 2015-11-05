@@ -25,7 +25,7 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
  */
-namespace VuFind\Content\Covers;
+namespace Resoutces\Content\Covers;
 use ZendService\Amazon\Amazon as AmazonService;
 
 /**
@@ -37,7 +37,7 @@ use ZendService\Amazon\Amazon as AmazonService;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
  */
-class Amazon extends \VuFind\Content\AbstractCover
+class Amazon extends \Resources\Content\AbstractCover
     implements \VuFindHttp\HttpServiceAwareInterface
 {
     use \VuFindHttp\HttpServiceAwareTrait;

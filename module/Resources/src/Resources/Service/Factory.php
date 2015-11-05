@@ -74,6 +74,106 @@ class Factory
         return static::getGenericPluginManager($sm, 'Content\Covers');
     }
 
+    /**
+     * Construct the Session Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \Zend\Session\SessionManager
+     */
+    public static function getSessionManager(ServiceManager $sm)
+    {
+        $cookieManager = $sm->get('Resources\CookieManager');
+        $sessionConfig = new \Zend\Session\Config\SessionConfig();
+        $options = [
+            'cookie_path' => $cookieManager->getPath(),
+            'cookie_secure' => $cookieManager->isSecure()
+        ];
+        $domain = $cookieManager->getDomain();
+        if (!empty($domain)) {
+            $options['cookie_domain'] = $domain;
+        }
+
+        $sessionConfig->setOptions($options);
+
+        return new \Zend\Session\SessionManager($sessionConfig);
+    }
+
+    /**
+     * Construct the cookie manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \Resources\Cookie\CookieManager
+     */
+    public static function getCookieManager(ServiceManager $sm)
+    {
+        $config = $sm->get('resourcesConfig')->get('config');
+        $path = '/';
+        if (isset($config->Cookies->limit_by_path)
+            && $config->Cookies->limit_by_path
+        ) {
+            $path = $sm->get('Request')->getBasePath();
+        }
+        $secure = isset($config->Cookies->only_secure)
+            ? $config->Cookies->only_secure
+            : false;
+        $domain = isset($config->Cookies->domain)
+            ? $config->Cookies->domain
+            : null;
+        return new \Resources\Cookie\CookieManager($_COOKIE, $path, $domain, $secure);
+    }
+
+    /**
+     * Construct the cache manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \Resources\Cache\Manager
+     */
+    public static function getCacheManager(ServiceManager $sm)
+    {
+
+        $resourcesConfig = $sm->get('resourcesConfig');
+
+        //at the moment I don't know what to do with the search cache
+        //used in standard VuFind
+        return new \Resources\Cache\Manager(
+            $resourcesConfig,
+            $resourcesConfig
+        );
+
+    }
+
+    /**
+     * Construct the HTTP service.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFindHttp\HttpService
+     */
+    public static function getHttp(ServiceManager $sm)
+    {
+        $config = $sm->get('resourcesConfig');
+        //todo: wie gehen wir mit VuFind/Config um?
+        //$config = $sm->get('VuFind\Config')->get('config');
+        $options = [];
+        if (isset($config->Proxy->host)) {
+            $options['proxy_host'] = $config->Proxy->host;
+            if (isset($config->Proxy->port)) {
+                $options['proxy_port'] = $config->Proxy->port;
+            }
+            if (isset($config->Proxy->type)) {
+                $options['proxy_type'] = $config->Proxy->type;
+            }
+        }
+        $defaults = isset($config->Http)
+            ? $config->Http->toArray() : [];
+        return new \VuFindHttp\HttpService($options, $defaults);
+    }
+
+
+
 
 
 }

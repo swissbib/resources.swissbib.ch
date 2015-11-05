@@ -37,8 +37,16 @@ return [
             'Cover\Http' => 'Resources\Http\HttpFactory',
             'resourcesConfig'   => 'Resources\Config\ResourcesConfig',
             'Resources\ContentCoversPluginManager' => 'Resources\Service\Factory::getContentCoversPluginManager',
+            'Resources\SessionManager' => 'Resources\Service\Factory::getSessionManager',
+            'Resources\CookieManager' => 'Resources\Service\Factory::getCookieManager',
+            'Resources\CacheManager' => 'Resources\Service\Factory::getCacheManager',
+            'VuFind\Http' => 'Resources\Service\Factory::getHttp',
 
-         ],
+
+
+
+
+        ],
 
     ],
     'view_manager' => [
@@ -81,6 +89,24 @@ return [
         // This section contains service manager configurations for all VuFind
         // pluggable components:
         'plugin_managers' => [
+
+            'content_covers' => [
+                'factories' => [
+                    'amazon' => 'Resources\Content\Covers\Factory::getAmazon',
+                    'booksite' => 'Resources\Content\Covers\Factory::getBooksite',
+                    'contentcafe' =>
+                        'Resources\Content\Covers\Factory::getContentCafe',
+                    'syndetics' => 'Resources\Content\Covers\Factory::getSyndetics',
+                ],
+                'invokables' => [
+                    'google' => 'VuFind\Content\Covers\Google',
+                    'librarything' => 'VuFind\Content\Covers\LibraryThing',
+                    'openlibrary' => 'VuFind\Content\Covers\OpenLibrary',
+                    'summon' => 'VuFind\Content\Covers\Summon',
+                ],
+            ],
+
+
         ]
         ]
 

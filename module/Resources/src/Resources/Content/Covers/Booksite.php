@@ -25,7 +25,7 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
  */
-namespace VuFind\Content\Covers;
+namespace Resources\Content\Covers;
 
 /**
  * Booksite cover content loader.
@@ -36,7 +36,7 @@ namespace VuFind\Content\Covers;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
  */
-class Booksite extends \VuFind\Content\AbstractCover
+class Booksite extends \Resources\Content\AbstractCover
 {
     /**
      * Base URL for Booksite

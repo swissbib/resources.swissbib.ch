@@ -26,7 +26,7 @@
  * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
  */
 namespace Resources\Content;
-use VuFind\ServiceManager\AbstractPluginManager;
+use Resources\ServiceManager\AbstractPluginManager;
 
 /**
  * Third-party content loader
